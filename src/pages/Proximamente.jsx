@@ -1,11 +1,9 @@
-
-import { useParams } from 'react-router-dom'
 import { useEffect, useState } from "react";
+
 import CardPe from "../components/CardPe";
+const APIProximamente = 'https://api.themoviedb.org/3/movie/upcoming?api_key=ecbcdcf9044928d12b179d9153f5a269&language=es-VE';
 
-const Peliculas = () => {
-
-    const { id, name } = useParams()
+const Proximamente = () => {
     const [datos, setDatos] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -13,11 +11,10 @@ const Peliculas = () => {
 
     useEffect(() => {
         const controller = new AbortController();
-        const APIPelGenero = `https://api.themoviedb.org/3/discover/movie?api_key=ecbcdcf9044928d12b179d9153f5a269&language=es-VE&with_genres=${id}`;
 
         const getDatos = async () => {
             try {
-                const response = await fetch(APIPelGenero, { signal: controller.signal });
+                const response = await fetch(APIProximamente, { signal: controller.signal });
                 if (!response.ok) {
                     throw new Error(
                         `HTTP error! status: ${response.status}`
@@ -37,7 +34,7 @@ const Peliculas = () => {
         getDatos();
 
         return () => controller.abort(); // Cleanup de la petición
-    }, [id]);
+    }, []);
 
     if (loading) {
         return (
@@ -56,11 +53,10 @@ const Peliculas = () => {
             </div>
         );
     }
-
     return (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
-            <h1 className="text-4xl font-bold text-white mb-6 capitalize">
-                Películas de {name}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+            <h1 className="text-3xl font-bold text-white mb-8 text-center md:text-left">
+                Proximamente
             </h1>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {datos.map((item) => (
@@ -72,10 +68,9 @@ const Peliculas = () => {
                     />
                 ))}
             </div>
-
-
+            
         </div>
-    )
+    );
 }
 
-export default Peliculas
+export default Proximamente

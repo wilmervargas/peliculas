@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import FiltroCine from './FiltroCine'
 import FiltroTv from './FiltroTv'
 
@@ -7,7 +7,9 @@ export default function Navbar() {
     const [mobileOpen, setMobileOpen] = useState(false)
     const [openDropdown, setOpenDropdown] = useState(null)
     const [activeLink, setActiveLink] = useState(0)
+    const [searchTerm, setSearchTerm] = useState('')
     const navRef = useRef(null)
+    const navigate = useNavigate()
 
     // Cierra el menú desplegable si el usuario hace clic fuera del componente
     useEffect(() => {
@@ -28,6 +30,15 @@ export default function Navbar() {
         setMobileOpen(false)
     }
 
+    const handleSearch = (e) => {
+        e.preventDefault()
+        if (searchTerm.trim()) {
+            navigate(`/busqueda/${searchTerm}`)
+            setSearchTerm('')
+            setMobileOpen(false)
+        }
+    }    
+
     return (
         <nav ref={navRef} className="relative bg-gray-900 border-gray-800 border-b z-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -38,6 +49,7 @@ export default function Navbar() {
 
                     <div className="hidden lg:flex items-center gap-1">
                         <Link to="/" onClick={() => { setActiveLink(0); setOpenDropdown(null); }} className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors inline-flex items-center gap-1 ${activeLink === 0 ? 'text-blue-400' : 'text-gray-400 hover:text-gray-200'}`}>Inicio</Link>
+                        <Link to="/proximamente" onClick={() => { setActiveLink(0); setOpenDropdown(null); }} className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors inline-flex items-center gap-1 ${activeLink === 0 ? 'text-blue-400' : 'text-gray-400 hover:text-gray-200'}`}>Proximamente</Link>
 
                         <div className="relative">
                             <button
@@ -58,8 +70,7 @@ export default function Navbar() {
                         <div className="relative">
                             <button
                                 onClick={() => setOpenDropdown(openDropdown === 2 ? null : 2)}
-                                className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors inline-flex items-center gap-1 ${activeLink === 2 ? 'text-blue-400' : 'text-gray-400 hover:text-gray-200'}`}
-                            >
+                                className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors inline-flex items-center gap-1 ${activeLink === 2 ? 'text-blue-400' : 'text-gray-400 hover:text-gray-200'}`}>
                                 Tv
                                 <svg className={`w-4 h-4 transition-transform duration-200 ${openDropdown === 2 ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -75,14 +86,23 @@ export default function Navbar() {
                         <Link to="/blog" onClick={() => { setActiveLink(3); setOpenDropdown(null); }} className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors inline-flex items-center gap-1 ${activeLink === 3 ? 'text-blue-400' : 'text-gray-400 hover:text-gray-200'}`}>Blog</Link>
                         <Link to="/contacto" onClick={() => { setActiveLink(4); setOpenDropdown(null); }} className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors inline-flex items-center gap-1 ${activeLink === 4 ? 'text-blue-400' : 'text-gray-400 hover:text-gray-200'}`}>Contacto</Link>
                     </div>
+
                     <div className="flex items-center gap-4">
-                        <div className="relative hidden lg:block">
-                            <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
-                            <input type="text" placeholder="Buscar..." className="w-48 bg-gray-800 border border-gray-700 rounded-lg pl-10 pr-3 py-1.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50" />
-                        </div>
-                        <div className="hidden lg:block"><button className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-500 hover:bg-blue-600 text-white">Empezar</button></div>
+                        <form onSubmit={handleSearch} className="relative hidden lg:block">
+                            <button type="submit" className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors">
+                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </button>
+                            <input
+                                type="text"
+                                placeholder="Buscar..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="w-48 bg-gray-800 border border-gray-700 rounded-lg pl-10 pr-3 py-1.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                            />
+                        </form>
+
                         <button
                             onClick={() => setMobileOpen(!mobileOpen)}
                             className="lg:hidden p-2 text-gray-400 hover:text-white rounded-lg hover:bg-gray-800 transition-colors"

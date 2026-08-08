@@ -1,18 +1,80 @@
-import React from 'react'
+
 import { useParams } from 'react-router-dom'
+import { useEffect, useState } from "react";
+import CardPe from "../components/CardPe";
+import CardTv from '../components/CardTv';
 
 const Tv = () => {
+
     const { id, name } = useParams()
+    const [datos, setDatos] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [selectedPelicula, setSelectedPelicula] = useState(null);
+
+    useEffect(() => {
+        const controller = new AbortController();
+        const APIPelGenero = `https://api.themoviedb.org/3/discover/tv?api_key=ecbcdcf9044928d12b179d9153f5a269&language=es-VE&with_genres=${id}`;
+
+        const getDatos = async () => {
+            try {
+                const response = await fetch(APIPelGenero, { signal: controller.signal });
+                if (!response.ok) {
+                    throw new Error(
+                        `HTTP error! status: ${response.status}`
+                    );
+                }
+                const data = await response.json();
+                setDatos(data.results);
+            } catch (err) {
+                if (err.name !== 'AbortError') {
+                    setError(err.message || 'Error de red o parseo');
+                }
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        getDatos();
+
+        return () => controller.abort(); // Cleanup de la petición
+    }, [id]);
+
+    if (loading) {
+        return (
+            <div className="text-center py-10">
+                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-emerald-500 mx-auto"></div>
+                <p className="text-emerald-400 mt-4">Cargando productos...</p>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="text-center py-10 text-red-400 bg-red-500/10 rounded-xl border border-red-500/20">
+                <h4 className="font-bold mb-2">Error al cargar</h4>
+                <p>{error}</p>
+            </div>
+        );
+    }
 
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
             <h1 className="text-4xl font-bold text-white mb-6 capitalize">
-                Películas y Series de {name}
+                Películas de {name}
             </h1>
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-8 text-center text-gray-400">
-                <p className="text-xl mb-2 text-white">Mostrando películas y series del género con ID: <span className="font-bold text-blue-400">{id}</span></p>
-                <p className="text-sm">Próximamente aquí se mostrará la lista de películas y series.</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {datos.map((item) => (
+                    <CardTv
+                        key={item.id} 
+                        item={item}    
+                        selectedPelicula = {selectedPelicula}
+                        setSelectedPelicula = {setSelectedPelicula}
+                    />
+                ))}
             </div>
+
+
         </div>
     )
 }

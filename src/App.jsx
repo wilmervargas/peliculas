@@ -9,6 +9,10 @@ import Contacto from './pages/Contacto'
 import Inicio from './pages/Inicio'
 import Peliculas from './pages/Peliculas'
 import DetalleCine from './pages/DetalleCine'
+import Error404 from './pages/Error404'
+import DetalleTv from './pages/DetalleTv'
+import Busqueda from './pages/Busqueda'
+import Proximamente from './pages/Proximamente'
 
 const App = () => {
   return (
@@ -21,12 +25,16 @@ const App = () => {
       <div className="min-h-screen bg-gray-950 text-white">
         <Routes>
           <Route path="/" element={<Inicio />} />
+          <Route path="/proximamente" element={<Proximamente />} />
           <Route path="/cine" element={<Cine />} />
           <Route path="/tv/:id/:name" element={<Tv />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/contacto" element={<Contacto />} />
           <Route path="/peliculas/:id/:name" element={<Peliculas />} />
           <Route path="/detalle-cine/:id" element={<DetalleCine />} />
+          <Route path="/detalle-tv/:id" element={<DetalleTv />} />
+          <Route path="/busqueda/:query" element={<Busqueda />} />
+          <Route path="*" element={<Error404 />} />
         </Routes>
       </div>
 

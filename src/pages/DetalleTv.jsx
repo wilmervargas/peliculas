@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 
-const DetalleCine = () => {
+const DetalleTv = () => {
     const { id } = useParams()
     const navigate = useNavigate()
     const [pelicula, setPelicula] = useState(null)
@@ -12,7 +12,7 @@ const DetalleCine = () => {
         const fetchDetalle = async () => {
             try {
                 setLoading(true)
-                const response = await fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=ecbcdcf9044928d12b179d9153f5a269&language=es-ES`)
+                const response = await fetch(`https://api.themoviedb.org/3/tv/${id}?api_key=ecbcdcf9044928d12b179d9153f5a269&language=es-ES`)
                 if (!response.ok) {
                     throw new Error('No se pudo cargar la información de la película')
                 }
@@ -73,7 +73,7 @@ const DetalleCine = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                     </svg>
                     Volver
-                 </button>
+                </button>
 
                 <div className="flex flex-col md:flex-row gap-8 lg:gap-12">
                     {/* Poster */}
@@ -137,4 +137,4 @@ const DetalleCine = () => {
     )
 }
 
-export default DetalleCine
+export default DetalleTv
